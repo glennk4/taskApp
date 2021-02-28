@@ -1,7 +1,14 @@
 package com.glendall.tasklist;
+/*
+    TITLE: TASK LIST
+    ACTIVITY: ADD TASK
+    AUTHOR: GLENN KENDALL
+    DATE 26/02/2021
+ */
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,7 +37,6 @@ public class AddTask extends AppCompatActivity {
         editName = (EditText) findViewById(R.id.taskName);
         editDesc = (EditText) findViewById(R.id.TaskDesc);
         createDataBtn = (Button) findViewById(R.id.addNewTaskBtn);
-
         displayDate = (TextView) findViewById(R.id.dueDate);
         displayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,10 +62,7 @@ public class AddTask extends AppCompatActivity {
                 String date = year+"-"+month+"-"+day;
                 displayDate.setText(date);
             }
-
         };
-
-
         AddData();
     }
 
@@ -74,12 +77,15 @@ public class AddTask extends AppCompatActivity {
                         if (isInserted == true) {
                             Toast.makeText(AddTask.this, "Data Inserted!",
                                     Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         } else
                             Toast.makeText(AddTask.this, "Data not inserted",
                                     Toast.LENGTH_LONG).show();
-
                     }
                 }
         );
     }
+
 }

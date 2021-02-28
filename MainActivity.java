@@ -1,17 +1,24 @@
 package com.glendall.tasklist;
-
+/*
+    TITLE: TASK LIST
+    ACTIVITY: MAIN ACTIVITY
+    AUTHOR: GLENN KENDALL
+    DATE 26/02/2021
+ */
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
+import android.view.View.OnTouchListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myDb= new DatabaseManager(this);
+        myDb = new DatabaseManager(this);
         addTaskBtn = (Button) findViewById(R.id.addNewTaskBtn);
         addTaskBtn.setOnClickListener(
                 new View.OnClickListener() {
@@ -32,18 +39,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         startActivity(new Intent(MainActivity.this, AddTask.class));
                     }
-                }
-        );
-
+                });
         viewAll();
     }
 
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        finish();
-        startActivity(new Intent(String.valueOf(MainActivity.this)));
-    }
 
     public void viewAll() {
 
@@ -59,24 +58,35 @@ public class MainActivity extends AppCompatActivity {
                 newTask.name = result.getString(result.getColumnIndex("NAME"));
                 newTask.description = result.getString(result.getColumnIndex("DESCRIPTION"));
                 newTask.dueDate = result.getString(result.getColumnIndex("DUE"));
-                newTask.completed = Boolean.parseBoolean(result.getString(result.getColumnIndex("COMPLETED")));
+                int compBool = result.getInt(result.getColumnIndex("COMPLETED"));
+
+                if (compBool==1) {
+                    newTask.completed=true;
+                }
+                else {
+                    newTask.completed = false;
+                }
                 newTask.doneDate = result.getString(result.getColumnIndex("DONE_DATE"));
                 taskList.add(newTask);
             }
-
             Button taskBtn[] = new Button[taskList.size()];
             for (int i = 0; i < taskList.size(); i++) {
                 taskBtn[i] = new Button(this);
                 layout.addView(taskBtn[i]);
                 taskBtn[i].setText(taskList.get(i).getName());
                 taskBtn[i].setId(i);
+                taskBtn[i].setTextSize(TypedValue.COMPLEX_UNIT_PX,82);
+                taskBtn[i].setTextColor(Color.BLACK);
+                taskBtn[i].setBackgroundColor(Color.TRANSPARENT);
+                if (taskList.get(i).completed){
+                    taskBtn[i].setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+              }
+
                 taskBtn[i].setOnClickListener(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 int buttonId = v.getId();
-                                System.out.println("button pressed is: "+buttonId);
-                                System.out.println("test of id ="+taskList.get(buttonId).id);
                                 viewTask(taskList,buttonId);
                             }
                         }
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     public void viewTask(ArrayList<Task> taskList, int buttonId){
 

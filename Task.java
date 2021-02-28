@@ -4,7 +4,7 @@ public class Task {
     public int id; 
     public String name; 
     public String description; 
-    public String dueDate; 
+    public String dueDate;
     public boolean completed; 
     public String doneDate;
 
